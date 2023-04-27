@@ -37,4 +37,4 @@
       dest: "{{ ansible.hostname }}.{{ item | regex_replace('\/var\/lib\/awx\/customEnv\/', '') | regex_replace('\/bin\/pip', '') }}.requirements.txt"
       mode: 0644
     loop: "{{ venvs | json_query('files[*].path') | regex_replace('\/var\/lib\/awx\/customEnv', '') }}"
-    delegate: localhost
+    delegate_to: localhost

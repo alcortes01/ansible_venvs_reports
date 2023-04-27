@@ -1,0 +1,40 @@
+---
+- name: Get Python Virtual Environments Information
+  hosts: all
+  gather_facts: true
+
+  tasks:
+  - name: Get all the venvs available in standard path
+    ansible.builtin.find:
+      paths: /var/lib/awx/customEnv
+      file_type: directory
+    register: venvs
+    become: true
+
+  - name: Get list of packages in venvs
+    ansible.builtin.pip_package_info:
+      clients:["{{ item }}/bin/pip"]
+    loop: "{{ venvs | json_query('files[*].path') }}"
+    register: venvs_packages
+    become: true
+
+  - name: Save json as a fact
+    set_fact:
+      jsondata: "{{ venvs_packages | json_query( querystr ) | flatten }}" 
+    vars:
+      querystr: "results[*].packages.*.[*]"
+  
+  - name: create the CSV report
+    ansible.builtin.template:
+      src: "csv.j2"
+      dest: "{{ ansible.hostname }}.venvs.csv"
+      mode: 0644
+    delegate_to: localhost
+
+  - name: create requirements files for the host
+    ansible.builtin.template:
+      src: "requirements.j2"
+      dest: "{{ ansible.hostname }}.{{ item | regex_replace('\/var\/lib\/awx\/customEnv\/', '') | regex_replace('\/bin\/pip', '') }}.requirements.txt"
+      mode: 0644
+    loop: "{{ venvs | json_query('files[*].path') | regex_replace('\/var\/lib\/awx\/customEnv', '') }}"
+    delegate: localhost

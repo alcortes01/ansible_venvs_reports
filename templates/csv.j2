@@ -1,0 +1,4 @@
+HOSTNAME,SOURCE,NAME,VERSION
+{% for i in jsondata %}
+{{ ansible_hostname }},{{ i.source | regex_replace('\/var\/lib\/awx\/customEnv\/', '') | regex_replace('\/bin\/pip', '') }},{{ i.name }},{{ i.version }}
+{% endfor %}

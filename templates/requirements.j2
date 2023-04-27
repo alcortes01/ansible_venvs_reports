@@ -1,0 +1,6 @@
+{% for i in jsondata %}
+{% set custenv = lookup('vars','item') %}
+{% if i.source == '/var/lib/awx/customEnv/' + custenv + '/bin/pip' %}
+{{ i.name }} == {{ i.version }}
+{% endif %}
+{% endfor %}

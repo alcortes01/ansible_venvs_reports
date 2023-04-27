@@ -6,7 +6,7 @@ Notice: The Ansible playbook will look for the Python virtual environments creat
 Create your "inventory" file with the remote host you want in your reports. 
 
 Use ansible-playbook command to execute: 
-'''
+```
 ansible-playbook -i inventory -u userID -k: --ask-become-pass get_venv_info.yml 
-''' 
+```
 Notice that you need to change the "userID" with your own login ID used to SSH the remote host. The parameter -k will ask for your SSH password. 

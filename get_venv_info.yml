@@ -20,10 +20,10 @@
 
   - name: Save json as a fact
     set_fact:
-      jsondata: "{{ venvs_packages | json_query( querystr ) | flatten }}" 
+      jsondata: "{{ venvs_packages | json_query( querystr ) | flatten }}"
     vars:
       querystr: "results[*].packages.*.[*]"
-  
+
   - name: create the CSV report
     ansible.builtin.template:
       src: "csv.j2"
